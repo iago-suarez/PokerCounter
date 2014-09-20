@@ -9,5 +9,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
+    <string name="small_blind">Ciega Pequeña</string>
+    <string name="big_blind">Ciega Grande</string>
+    <string name="time">Tiempo</string>
+    <string name="next_level">Suguiente Nivel</string>
+    <string name="start_txt">Empezar</string>
+    <string name="pause_txt">Parar</string>
 
 </resources>
