@@ -19,7 +19,7 @@ public class IagoDistribution implements BlindsDistribution {
 	}
 
 	@Override
-	public List<BlindsLevel> getBlindsLevel() {
+	public List<BlindsLevel> getBlindsLevels() {
 		return levels;
 	}
 

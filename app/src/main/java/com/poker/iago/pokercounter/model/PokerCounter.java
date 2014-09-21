@@ -1,10 +1,12 @@
 package com.poker.iago.pokercounter.model;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 
 public abstract class PokerCounter {
 
-	/**
+    private Context context;
+    /**
 	 * Es la distribución de niveles de ciegas que sigue el contador
 	 */
 	private BlindsDistribution distribution;
@@ -12,7 +14,7 @@ public abstract class PokerCounter {
 	/**
 	 * Es el nivel actual en elque se encuentra el contador
 	 */
-	private int blindsLevel;
+	private int blindsLevel = 0;
 	private int segundosRestantes;
 	private CountDownTimer countDownTimer;
 
@@ -21,7 +23,7 @@ public abstract class PokerCounter {
 	}
 
 	public void startCounter() {
-		segundosRestantes = distribution.getBlindsLevel().get(0).getMinutes() * 60;
+		segundosRestantes = distribution.getBlindsLevels().get(blindsLevel).getMinutes() * 60;
 		countDownTimer = new CountDownTimer(segundosRestantes * 1000, 1000) {
 
 			public void onTick(long millisUntilFinished) {
@@ -30,7 +32,7 @@ public abstract class PokerCounter {
 			}
 
 			public void onFinish() {
-				nextLevel();
+                levelFinished(distribution.getBlindsLevels().get(blindsLevel));
 			}
 		}.start();
 	}
@@ -39,6 +41,7 @@ public abstract class PokerCounter {
 	 * Pausará el contador hasta que se llame a startCounter o a nextLevel
 	 */
 	public void pauseCounter() {
+
 		countDownTimer.cancel();
 	}
 
@@ -49,7 +52,7 @@ public abstract class PokerCounter {
 	public void nextLevel() {
 		blindsLevel++;
 		countDownTimer.cancel();
-		segundosRestantes = distribution.getBlindsLevel().get(blindsLevel)
+		segundosRestantes = distribution.getBlindsLevels().get(blindsLevel)
 				.getMinutes() * 60;
 	}
 
@@ -63,7 +66,7 @@ public abstract class PokerCounter {
 	}
 
 	public BlindsLevel getBlindsLevel() {
-		return distribution.getBlindsLevel().get(blindsLevel);
+		return distribution.getBlindsLevels().get(blindsLevel);
 	}
 	
 	public BlindsDistribution getDistribution() {
@@ -78,5 +81,7 @@ public abstract class PokerCounter {
 	 * progressbars ...
 	 */
 	protected abstract void actualizarContador(long millisUntilFinished);
+
+    protected abstract void levelFinished(BlindsLevel finishedLevel);
 
 }

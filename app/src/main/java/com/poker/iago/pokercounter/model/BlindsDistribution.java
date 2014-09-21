@@ -15,5 +15,6 @@ public interface BlindsDistribution {
 	 */
 	public String getName();
 
-	public List<BlindsLevel> getBlindsLevel();
+	public List<BlindsLevel> getBlindsLevels();
+
 }
