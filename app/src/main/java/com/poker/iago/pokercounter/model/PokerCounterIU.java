@@ -1,13 +1,14 @@
 package com.poker.iago.pokercounter.model;
 
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-import com.triggertrap.seekarc.SeekArc;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.devadvance.circularseekbar.CircularSeekBar;
 import com.poker.iago.pokercounter.R;
 
 public class PokerCounterIU extends PokerCounter {
@@ -17,7 +18,7 @@ public class PokerCounterIU extends PokerCounter {
 	private Button startPauseButt;
 	private Button nextLevelButt;
 	private TextView digitalClock;
-	private SeekArc seekArc;
+	private CircularSeekBar seekBar;
 
 	private Handler prBarHandler = new Handler();
 
@@ -35,9 +36,14 @@ public class PokerCounterIU extends PokerCounter {
 		startPauseButt = (Button) view.findViewById(R.id.startPauseButt);
 		nextLevelButt = (Button) view.findViewById(R.id.nextLevelButt);
 		digitalClock = (TextView) view.findViewById(R.id.digitalClock1);
-		seekArc = (SeekArc) view.findViewById(R.id.levelProgressBar);
-        seekArc.setRoundedEdges(false);
-
+        seekBar = (CircularSeekBar) view.findViewById(R.id.levelProgressBar);
+        //Inutilizamos la funcion de click
+        seekBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
 	}
 
 	@Override
@@ -72,7 +78,7 @@ public class PokerCounterIU extends PokerCounter {
 		// Update the progress bar
 		prBarHandler.post(new Runnable() {
 			public void run() {
-				seekArc.setProgress(mProgressStatus);
+                seekBar.setProgress(mProgressStatus);
 			}
 		});
 

@@ -1,6 +1,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,18 +10,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.pokercounter.MainActivity$PlaceholderFragment" >
 
-    <com.triggertrap.seekarc.SeekArc
+    <com.devadvance.circularseekbar.CircularSeekBar
         android:id="@+id/levelProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-180dp"
-        android:padding="60dp"
-        seekarc:rotation="-90"
-        seekarc:sweepAngle="180"
-        seekarc:touchInside="true"
-        seekarc:roundEdges="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:start_angle="-180"
+        app:end_angle="0"
+        app:pointer_alpha_ontouch="100"
+        app:pointer_radius="0"
+        app:pointer_halo_width="0"
+        app:circle_progress_color="RED"
         />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
