@@ -29,7 +29,7 @@ public class TimerFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private PokerCounterIU pokerCounterIU;
+    private PokerCounter pokerCounter;
 
     private View rootView;
     private Button startPauseButt;
@@ -58,16 +58,14 @@ public class TimerFragment extends Fragment {
 
 
         // TODO Si queremos emplear una distribución especial debemos
-        // pasarsela aqui al constructor de pokerCounterIU
-        pokerCounterIU = new PokerCounterIU();
+        // pasarsela aqui al constructor de pokerCounter
+        pokerCounter = PokerCounter.getInstance(getActivity(), rootView);
         blindsTable = (TableLayout) rootView
                 .findViewById(R.id.blinds_table);
-
 
         generateTableRow(inflater);
 
 		/* Asignamos lo necesario al boton de Start/Pause */
-
         startPauseButt = (Button) rootView.findViewById(R.id.startPauseButt);
         startPauseButt.setText(getString(R.string.start_txt));
         startPauseButt.setOnClickListener(new View.OnClickListener() {
@@ -78,10 +76,10 @@ public class TimerFragment extends Fragment {
                 // Si el contador está parado lo arrancamos sino lo paramos
                 if (startPauseButt.getText() == getString(R.string.start_txt) ||
                         startPauseButt.getText() == getString(R.string.continue_txt)) {
-                    pokerCounterIU.startCounter();
+                    pokerCounter.startCounter();
                     startPauseButt.setText(getString(R.string.pause_txt));
                 } else {
-                    pokerCounterIU.pauseCounter();
+                    pokerCounter.pauseCounter();
                     startPauseButt.setText(getString(R.string.continue_txt));
                 }
             }
@@ -95,7 +93,7 @@ public class TimerFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                pokerCounterIU.nextLevel();
+                pokerCounter.nextLevel();
             }
 
         });
@@ -119,7 +117,7 @@ public class TimerFragment extends Fragment {
      * Recorremos los nieveles de ciegas añadiendo la TableRow correspondiente a cada uno
      */
     private void generateTableRow(LayoutInflater inflater){
-        for (BlindsLevel bl : pokerCounterIU.getDistribution()
+        for (BlindsLevel bl : pokerCounter.getDistribution()
                 .getBlindsLevels())
             addTableRow(bl, blindsTable, inflater);
     }
@@ -155,67 +153,5 @@ public class TimerFragment extends Fragment {
         time.setText(Integer.toString(bl.getMinutes()));
 
         parent.addView(row);
-    }
-
-
-    class PokerCounterIU extends PokerCounter {
-
-        private TextView clockTextView;
-        private CircularSeekBar seekBar;
-
-        private Handler prBarHandler = new Handler();
-
-        /**
-         * Por defecto se asigna una distribución IagoDistribution
-         */
-        public PokerCounterIU() {
-            this(new IagoDistribution());
-        }
-
-        public PokerCounterIU( BlindsDistribution distribution) {
-            super(distribution);
-
-            clockTextView = (TextView) rootView.findViewById(R.id.digitalClock1);
-            seekBar = (CircularSeekBar) rootView.findViewById(R.id.levelProgressBar);
-            //Inutilizamos la funcion de click
-            seekBar.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    return true;
-                }
-            });
-        }
-
-        public void nextLevel() {
-            super.nextLevel();
-            // TODO Resetear contador y progressbar
-        }
-
-        @Override
-        public void actualizarContador(long millisUntilFinished) {
-
-            long maxMs = getBlindsLevel().getMinutes() * 60000;
-            long actualMs = maxMs - getMillisUntilFinished();
-            final int mProgressStatus = new Long(((actualMs / maxMs) * 100))
-                    .intValue();
-
-            Log.i(this.getClass().toString(), Integer.toString(mProgressStatus));
-
-            // Update the progress bar
-            prBarHandler.post(new Runnable() {
-                public void run() {
-                    seekBar.setProgress(mProgressStatus);
-                }
-            });
-
-            clockTextView.setText(Integer.toString(new Long(
-                    (millisUntilFinished / 1000)).intValue()));
-
-        }
-
-        @Override
-        protected void levelFinished(BlindsLevel finishedLevel) {
-            //TODO
-        }
     }
 }
