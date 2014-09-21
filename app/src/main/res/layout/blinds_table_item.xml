@@ -11,7 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="BB" />
+        android:text="BB"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
 
     <TextView
         android:id="@+id/sb_table_row"
@@ -20,7 +22,9 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_gravity="right"
-        android:text="SB" />
+        android:text="SB"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
 
     <TextView
         android:id="@+id/time_table_row"
@@ -28,8 +32,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-                android:layout_gravity="right"
-        
-        android:text="Time" />
+        android:layout_gravity="right"
+        android:text="Time"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
 
 </TableRow>

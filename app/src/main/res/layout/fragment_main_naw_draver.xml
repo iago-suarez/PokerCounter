@@ -1,4 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,42 +10,47 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.pokercounter.MainActivity$PlaceholderFragment" >
 
-    <DigitalClock
-        android:id="@+id/digitalClock1"
+    <com.triggertrap.seekarc.SeekArc
+        android:id="@+id/levelProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-180dp"
+        android:padding="60dp"
+        seekarc:rotation="-90"
+        seekarc:sweepAngle="180"
+        seekarc:touchInside="true"
+        seekarc:roundEdges="false"
+        />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/digitalClock1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Loading"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="DigitalClock"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_marginTop="40dp"/>
 
     <Button
         android:id="@+id/startPauseButt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/digitalClock1"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_toLeftOf="@+id/digitalClock1"
-        android:text="Button1" />
+        android:text="Button1"/>
 
     <Button
         android:id="@+id/nextLevelButt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/digitalClock1"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_toRightOf="@+id/digitalClock1"
         android:text="@string/next_level" />
 
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+
 
     <ScrollView
         android:id="@+id/scrollView1"
@@ -68,28 +75,28 @@
                     android:id="@+id/textView1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/small_blind" />
+                    android:text="@string/small_blind"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/big_blind" />
+                    android:text="@string/big_blind"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="@string/time" />
+                    android:text="@string/time"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
             </TableRow>
         </TableLayout>
-
-        <!-- <LinearLayout -->
-        <!-- android:layout_width="match_parent" -->
-        <!-- android:layout_height="match_parent" -->
-        <!-- android:orientation="vertical" > -->
-        <!-- </LinearLayout> -->
     </ScrollView>
 
 </RelativeLayout>

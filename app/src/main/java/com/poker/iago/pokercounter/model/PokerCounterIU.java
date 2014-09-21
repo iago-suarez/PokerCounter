@@ -3,9 +3,10 @@ package com.poker.iago.pokercounter.model;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DigitalClock;
-import android.widget.ProgressBar;
+
+import com.triggertrap.seekarc.SeekArc;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import com.poker.iago.pokercounter.R;
 
@@ -15,19 +16,16 @@ public class PokerCounterIU extends PokerCounter {
 	private TableLayout blinds_table;
 	private Button startPauseButt;
 	private Button nextLevelButt;
-	private DigitalClock digitalClock;
-	private ProgressBar progressBar;
+	private TextView digitalClock;
+	private SeekArc seekArc;
 
 	private Handler prBarHandler = new Handler();
 
+    /**
+     * Por defecto se asigna una distribución IagoDistribution
+     */
 	public PokerCounterIU(View pokerCounterView) {
-		super();
-		view = pokerCounterView;
-		blinds_table = (TableLayout) view.findViewById(R.id.blinds_table);
-		startPauseButt = (Button) view.findViewById(R.id.startPauseButt);
-		nextLevelButt = (Button) view.findViewById(R.id.nextLevelButt);
-		digitalClock = (DigitalClock) view.findViewById(R.id.digitalClock1);
-		progressBar = (ProgressBar) view.findViewById(R.id.progressBar1);
+		this(pokerCounterView, new IagoDistribution());
 	}
 
 	public PokerCounterIU(View pokerCounterView, BlindsDistribution distribution) {
@@ -36,8 +34,10 @@ public class PokerCounterIU extends PokerCounter {
 		blinds_table = (TableLayout) view.findViewById(R.id.blinds_table);
 		startPauseButt = (Button) view.findViewById(R.id.startPauseButt);
 		nextLevelButt = (Button) view.findViewById(R.id.nextLevelButt);
-		digitalClock = (DigitalClock) view.findViewById(R.id.digitalClock1);
-		progressBar = (ProgressBar) view.findViewById(R.id.progressBar1);
+		digitalClock = (TextView) view.findViewById(R.id.digitalClock1);
+		seekArc = (SeekArc) view.findViewById(R.id.levelProgressBar);
+        seekArc.setRoundedEdges(false);
+
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class PokerCounterIU extends PokerCounter {
 		// Update the progress bar
 		prBarHandler.post(new Runnable() {
 			public void run() {
-				progressBar.setProgress(mProgressStatus);
+				seekArc.setProgress(mProgressStatus);
 			}
 		});
 

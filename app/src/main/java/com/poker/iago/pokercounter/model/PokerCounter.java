@@ -16,13 +16,6 @@ public abstract class PokerCounter {
 	private int segundosRestantes;
 	private CountDownTimer countDownTimer;
 
-	/**
-	 * Por defecto se asigna una distribución IagoDistribution
-	 */
-	public PokerCounter() {
-		this.distribution = new IagoDistribution();
-	}
-
 	public PokerCounter(BlindsDistribution distribution) {
 		this.distribution = distribution;
 	}
