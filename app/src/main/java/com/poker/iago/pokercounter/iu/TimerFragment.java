@@ -2,22 +2,16 @@ package com.poker.iago.pokercounter.iu;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.devadvance.circularseekbar.CircularSeekBar;
 import com.poker.iago.pokercounter.R;
-import com.poker.iago.pokercounter.model.BlindsDistribution;
 import com.poker.iago.pokercounter.model.BlindsLevel;
-import com.poker.iago.pokercounter.model.IagoDistribution;
 import com.poker.iago.pokercounter.model.PokerCounter;
 
 /**
@@ -109,7 +103,7 @@ public class TimerFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainNawDraver) activity).onSectionAttached(
+        ((MainNawDraver) activity).updateTitle(
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 

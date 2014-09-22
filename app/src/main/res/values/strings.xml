@@ -18,5 +18,6 @@
     <string name="continue_txt">Continue</string>
     <string name="level_finished">Level Finished</string>
     <string name="level_finished_ext">The actual level is finished</string>
+    <string name="blinds_counter_label">Blinds Counter</string>
 
 </resources>

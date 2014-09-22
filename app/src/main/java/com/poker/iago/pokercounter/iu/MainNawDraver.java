@@ -1,6 +1,7 @@
 package com.poker.iago.pokercounter.iu;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -14,7 +15,8 @@ import com.poker.iago.pokercounter.R;
 public class MainNawDraver extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    //Testing GitHub
+    public static final String INITIAL_DRAWER_ITEM_CLASS = "INITIAL_DRAWER_ITEM_CLASS";
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -24,10 +26,19 @@ public class MainNawDraver extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private Fragment containedFragment;
+    private Class drawerInitialClassItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Si nos han pasado una clase para que carguemos su fragment, se lo pasamos al
+        // NavigationDrawerFragment
+        Bundle mBundle = getIntent().getExtras();
+        if (mBundle != null)
+            drawerInitialClassItem = (Class) mBundle.getSerializable(INITIAL_DRAWER_ITEM_CLASS);
+
         setContentView(R.layout.activity_main_naw_draver);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -41,26 +52,38 @@ public class MainNawDraver extends ActionBarActivity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
+        containedFragment = TimerFragment.newInstance(position);
         fragmentManager.beginTransaction()
-                .replace(R.id.container, TimerFragment.newInstance(position + 1))
+                .replace(R.id.container, containedFragment)
                 .commit();
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
+    /**
+     * Return the initial fragment class associated to a DrawerItem, to be started.
+     *
+     * @return the class or null if thre are no initial fragment to load.
+     */
+    @Override
+    public Class getInitialDrawerClassItem() {
+        return drawerInitialClassItem;
+    }
+
+    /**
+     * Load in mTitle the name for the actual windows, it's not posible to meka it calloing
+     * NavigationDrawerFragment ItemDrawer's list because is posible that the NavigationDrawerFragment
+     * is not instanciated.
+     * @param position
+     */
+    public void updateTitle(int position) {
+        mTitle = mNavigationDrawerFragment.getDrawerItems()[position].getName();
+/*        switch (position) {
+            case 0:
+                mTitle = getString(R.string.blinds_counter_label);
                 break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+        }*/
     }
 
     public void restoreActionBar() {
@@ -95,6 +118,4 @@ public class MainNawDraver extends ActionBarActivity
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }
