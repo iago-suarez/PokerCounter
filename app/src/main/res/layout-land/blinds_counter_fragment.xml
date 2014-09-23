@@ -1,0 +1,107 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.pokercounter.MainActivity$PlaceholderFragment" >
+
+    <com.devadvance.circularseekbar.CircularSeekBar
+        android:id="@+id/levelProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:start_angle="-180"
+        app:end_angle="0"
+        app:pointer_alpha_ontouch="100"
+        app:pointer_radius="0"
+        app:pointer_halo_width="0"
+        app:circle_progress_color="RED"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/digitalClock1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Loading"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="100dp"
+        android:layout_alignTop="@+id/levelProgressBar"/>
+
+    <Button
+        android:id="@+id/startPauseButt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button1"
+        android:layout_marginLeft="25dp"
+        android:layout_alignTop="@+id/nextLevelButt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/nextLevelButt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next_level"
+        android:layout_toEndOf="@+id/digitalClock1"
+        android:layout_marginBottom="57dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/digitalClock1" />
+
+
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:layout_toEndOf="@+id/levelProgressBar"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/levelProgressBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="20dp">
+
+        <TableLayout
+            android:id="@+id/blinds_table"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/small_blind"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/big_blind"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:text="@string/time"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
+</RelativeLayout>

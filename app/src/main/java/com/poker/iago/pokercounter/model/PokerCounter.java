@@ -26,6 +26,20 @@ public class PokerCounter {
 
     private static PokerCounter INSTANCE = new PokerCounter();
 
+    /**
+     * Diferentes estados que sirven para indicar el estado actual del Contador
+     */
+    public static enum State {
+        RUNNING,// El contador está corriendo actualmente
+        PAUSED, // El contador del tiempo ha sido pausado sin que se complete el nivel de ciegas
+        STOPED};// El contador está parado, bien porque no se ha pulsado comenzar, bien porque el
+                // nivel de ciegas se ha acabado
+
+    /**
+     * Guarda el estado actual del contador de ciegas
+     */
+    private State state = State.STOPED;
+
     private Context context;
     /**
 	 * Es la distribución de niveles de ciegas que sigue el contador, por defecto IagoDistribution
@@ -44,9 +58,12 @@ public class PokerCounter {
     private TextView clockTextView;
     private NotificationCompat.Builder mBuilder;
 
-    private Calendar clockCalendar = Calendar.getInstance();
+    private static Calendar clockCalendar = Calendar.getInstance();
     private SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss");
 
+    static{
+        clockCalendar.setTimeInMillis(0);
+    }
     /**
      * This class is a Songelton, whith this methor return a PokerCounter that update the rootView
      * progressBar and TextView
@@ -77,13 +94,13 @@ public class PokerCounter {
         });
 
         //Generamos la notificación para lanzarla más adelante
-        mBuilder =generateNotification();
+        if(mBuilder == null) mBuilder =generateNotification();
 
-        //Establecemos a 0 el calendar
-        clockCalendar.setTimeInMillis(0);
-        clockCalendar.set(Calendar.MINUTE, getBlindsLevel().getMinutes());
+        //Si el contador no estaba corriendo, asignamos el primer tiempo
+        if (state == State.STOPED)
+            clockCalendar.set(Calendar.MINUTE, getBlindsLevel().getMinutes());
 
-        //Establecemos a 0 la progressBar y el tiempo
+        //Metemos en la progressBar y en el tiempo, los datos del clockCalendar
         updateCounter();
 	}
 
@@ -91,6 +108,7 @@ public class PokerCounter {
         //Si segundos restantes ya tiene un valor esto quiere decir que ha sido detenido, y que
         // debemos lanzarlo desde donde nos habíamos quedado.
 		countDownTimer = new MyCountDownTimer(clockCalendar.getTimeInMillis(), 1000).start();
+        state = State.RUNNING;
 	}
 
 	/**
@@ -98,6 +116,7 @@ public class PokerCounter {
 	 */
 	public void pauseCounter() {
 		countDownTimer.cancel();
+        state = State.PAUSED;
 	}
 
 	/**
@@ -107,10 +126,13 @@ public class PokerCounter {
 	public void nextLevel() {
 		blindsLevel++;
 		countDownTimer.cancel();
+        state = State.STOPED;
 
         //Borramos el reloj del anterior nivel, y establecemos el del siguiente
         clockCalendar.setTimeInMillis(0);
         clockCalendar.set(Calendar.MINUTE, getBlindsLevel().getMinutes());
+
+        //TODO Cambiar el boton de continue a paused
 
         updateCounter();
 	}
@@ -120,6 +142,7 @@ public class PokerCounter {
      */
     public void resetBlindsLevel(){
         countDownTimer.cancel();
+        state = State.STOPED;
 
         //Borramos el reloj del anterior nivel, y establecemos el del siguiente
         clockCalendar.setTimeInMillis(0);
@@ -131,8 +154,12 @@ public class PokerCounter {
 	public BlindsLevel getBlindsLevel() {
 		return distribution.getBlindsLevels().get(blindsLevel);
 	}
-	
-	public BlindsDistribution getDistribution() {
+
+    public void setDistribution(BlindsDistribution distribution) {
+        this.distribution = distribution;
+    }
+
+    public BlindsDistribution getDistribution() {
 		return distribution;
 	}
 
@@ -179,9 +206,15 @@ public class PokerCounter {
         return mBuilder;
     }
 
-    protected void levelFinished(BlindsLevel finishedLevel){
-    };
+    public State getState(){
+        return state;
+    }
 
+    /**
+     * Es un countDownTimer que en cada click resta un segundo al clockCalendar y actualiza la
+     * interfaz. Cuando ha acabado se encarga de lanzar la notificacion de mBuilder y actualizar la
+     * interfaz.
+     */
     private class MyCountDownTimer extends CountDownTimer {
         private static final int NOTIF_ALERTA_ID = 1;
 
@@ -200,6 +233,9 @@ public class PokerCounter {
             clockCalendar.add(Calendar.SECOND, -1);
 
             updateCounter();
+            //TODO lo que podemos hacer es darle al usuario opción de pasar al siguiente nivel (tecla next)
+            // O bien comenzar de nuevo el actual (Boton de start, pero con la etiqueta cambiada a
+            // reestart y q llama a la funcion de reestart)
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

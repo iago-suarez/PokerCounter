@@ -96,7 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         drawerItems = new DrawerItem[]{
                 new DrawerItem(getString(R.string.blinds_counter_label), getResources()
-                        .getDrawable(android.R.drawable.ic_lock_idle_alarm),TimerFragment.class )};
+                        .getDrawable(android.R.drawable.ic_lock_idle_alarm),BlindsCounterFrag.class )};
 
         // Si tenemos una clase en mInitialClassItem y un drawerItem que le corresponda, seleccionamos
         // ese DrawerItem para que se el fragment con el que relacionado(mInitialClassItem).

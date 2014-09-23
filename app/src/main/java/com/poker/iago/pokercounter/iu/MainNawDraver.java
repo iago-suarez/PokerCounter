@@ -55,7 +55,7 @@ public class MainNawDraver extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        containedFragment = TimerFragment.newInstance(position);
+        containedFragment = BlindsCounterFrag.newInstance(position);
         fragmentManager.beginTransaction()
                 .replace(R.id.container, containedFragment)
                 .commit();
@@ -78,12 +78,11 @@ public class MainNawDraver extends ActionBarActivity
      * @param position
      */
     public void updateTitle(int position) {
-        mTitle = mNavigationDrawerFragment.getDrawerItems()[position].getName();
-/*        switch (position) {
+        switch (position) {
             case 0:
                 mTitle = getString(R.string.blinds_counter_label);
                 break;
-        }*/
+        }
     }
 
     public void restoreActionBar() {
