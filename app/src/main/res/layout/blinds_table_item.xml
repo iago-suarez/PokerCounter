@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/blinds_table_row"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true" >
+    android:clickable="true"
+    android:layout_width="0dp">
 
+    <!--Alinea a la derechecha los textos, y la etiqueta al centro-->
     <TextView
         android:id="@+id/bb_table_row"
         android:layout_width="wrap_content"
@@ -13,6 +14,8 @@
         android:layout_marginRight="10dp"
         android:text="BB"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_weight="1"
+        android:gravity="center"
         />
 
     <TextView
@@ -21,9 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_gravity="right"
         android:text="SB"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_weight="1"
+        android:gravity="center"
         />
 
     <TextView
@@ -32,9 +36,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_gravity="right"
         android:text="Time"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_weight="1"
+        android:gravity="center"
         />
 
 </TableRow>

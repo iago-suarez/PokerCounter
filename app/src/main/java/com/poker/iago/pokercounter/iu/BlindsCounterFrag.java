@@ -52,9 +52,8 @@ public class BlindsCounterFrag extends Fragment {
      * @param bl
      * @param parent
      * @param inflater
-     * @return
      */
-    private static void addTableRow(BlindsLevel bl, TableLayout parent,
+    private void addTableRow(BlindsLevel bl, TableLayout parent,
                                     LayoutInflater inflater) {
 
         View row = inflater.inflate(R.layout.blinds_table_item, parent, false);

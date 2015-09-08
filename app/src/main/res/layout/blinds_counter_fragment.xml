@@ -1,4 +1,15 @@
-<RelativeLayout
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,6 +21,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.pokercounter.MainActivity$PlaceholderFragment" >
 
+
     <com.devadvance.circularseekbar.CircularSeekBar
         android:id="@+id/levelProgressBar"
         android:layout_width="wrap_content"
@@ -20,6 +32,7 @@
         app:pointer_radius="0"
         app:pointer_halo_width="0"
         app:circle_progress_color="RED"
+        app:circle_color="WHITE"
         />
 
     <TextView
@@ -39,7 +52,9 @@
         android:layout_below="@+id/digitalClock1"
         android:layout_marginTop="50dp"
         android:layout_toLeftOf="@+id/digitalClock1"
-        android:text="Button1"/>
+        android:text="Button1"
+        android:background="@drawable/red_button"
+        style="@style/button_text"/>
 
     <Button
         android:id="@+id/nextLevelButt"
@@ -48,55 +63,62 @@
         android:layout_below="@+id/digitalClock1"
         android:layout_marginTop="50dp"
         android:layout_toRightOf="@+id/digitalClock1"
-        android:text="@string/next_level" />
-
-
-
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_below="@id/startPauseButt"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-        android:scrollbars="vertical" >
+        android:text="@string/next_level"
+        android:background="@drawable/red_button"
+        style="@style/button_text"/>
 
         <TableLayout
             android:id="@+id/blinds_table"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/startPauseButt"
+            android:layout_marginTop="30dp"
+            android:stretchColumns="3"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <TableRow
                 android:id="@+id/tableRow1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" >
+                android:background="@drawable/red_background"
+                >
 
                 <TextView
                     android:id="@+id/textView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:text="@string/small_blind"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="#00000000"/>
 
                 <TextView
                     android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:text="@string/big_blind"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="#00000000"/>
 
                 <TextView
                     android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:text="@string/time"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="#00000000"/>
             </TableRow>
         </TableLayout>
-    </ScrollView>
-
 </RelativeLayout>
+    </LinearLayout>
+</ScrollView>
