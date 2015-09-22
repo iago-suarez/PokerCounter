@@ -3,7 +3,8 @@
     android:id="@+id/blinds_table_row"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:layout_width="0dp">
+    android:layout_width="0dp"
+    style="@style/Base.Theme.AppCompat.Light">
 
     <!--Alinea a la derechecha los textos, y la etiqueta al centro-->
     <TextView
@@ -16,6 +17,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_weight="1"
         android:gravity="center"
+        android:background="#00000000"
         />
 
     <TextView
@@ -28,6 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_weight="1"
         android:gravity="center"
+        android:background="#00000000"
         />
 
     <TextView
@@ -40,6 +43,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_weight="1"
         android:gravity="center"
+        android:background="#00000000"
         />
 
 </TableRow>

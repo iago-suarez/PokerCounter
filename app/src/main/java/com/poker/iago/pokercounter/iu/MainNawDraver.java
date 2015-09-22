@@ -26,7 +26,6 @@ public class MainNawDraver extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private Fragment containedFragment;
     private Class drawerInitialClassItem;
 
     @Override
@@ -55,7 +54,7 @@ public class MainNawDraver extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position, boolean fromSavedInstanceState) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        containedFragment = BlindsCounterFrag.newInstance(position);
+        Fragment containedFragment = BlindsCounterFrag.newInstance(position);
         fragmentManager.beginTransaction()
                 .replace(R.id.container, containedFragment)
                 .commit();

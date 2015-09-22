@@ -1,22 +1,14 @@
 package com.poker.iago.pokercounter.model;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.CountDownTimer;
-import android.support.v4.app.NotificationCompat;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.TextView;
 
-import com.devadvance.circularseekbar.CircularSeekBar;
-import com.poker.iago.pokercounter.R;
-import com.poker.iago.pokercounter.iu.MainNawDraver;
+import com.poker.iago.pokercounter.exception.InvalidStateError;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Representa un contador de ciegas, que en segundo plano, realiza las acciones necesariar, tanto
@@ -29,18 +21,32 @@ public class PokerCounter {
     /**
      * Diferentes estados que sirven para indicar el estado actual del Contador
      */
-    public static enum State {
+    public enum State {
+
         RUNNING,// El contador está corriendo actualmente
         PAUSED, // El contador del tiempo ha sido pausado sin que se complete el nivel de ciegas
-        STOPED};// El contador está parado, bien porque no se ha pulsado comenzar, bien porque el
-                // nivel de ciegas se ha acabado
-
+        STOPPED_START,// El contador está parado porque no se ha pulsado comenzar
+        STOPPED_END;// El contador está parado porque el nivel de ciegas se ha acabado
+        public boolean isRunnig(){
+            return this == State.RUNNING;
+        }
+        public boolean isPaused(){
+            return this == State.PAUSED;
+        }
+        public boolean isStoppedStart(){
+            return this == State.STOPPED_START;
+        }
+        public boolean isStoppedEnd(){
+            return this == State.STOPPED_END;
+        }
+    };
     /**
      * Guarda el estado actual del contador de ciegas
      */
-    private State state = State.STOPED;
+    private State state = State.STOPPED_START;
 
-    private Context context;
+    private List<PokerCounterListener> listeners = new ArrayList<PokerCounterListener>();
+
     /**
 	 * Es la distribución de niveles de ciegas que sigue el contador, por defecto IagoDistribution
 	 */
@@ -53,15 +59,17 @@ public class PokerCounter {
     /**
      * This counter count the seconds in a blind level and call to updateCounter and levelFinished
      */
-	private CountDownTimer countDownTimer;
-    private CircularSeekBar circularSeekBar;
-    private TextView clockTextView;
-    private NotificationCompat.Builder mBuilder;
+	private MyCountDownTimer countDownTimer;
 
+    /**
+     * Contiene los milisegundos restantes para que finalize en nivel de ciegas
+     */
     private static Calendar clockCalendar = Calendar.getInstance();
-    private SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss");
+
+    private Context context;
 
     static{
+        //Se ejecuta cuando iniciamos el programa
         clockCalendar.setTimeInMillis(0);
     }
     /**
@@ -69,52 +77,49 @@ public class PokerCounter {
      * progressBar and TextView
      * @return the unique instance of this class
      */
-    public static PokerCounter getInstance(Context context, View rootView){
-        INSTANCE.setView(context, rootView);
+    public static PokerCounter getInstance(Context context){
+        //Se ejecuta al solicitar una in
+        INSTANCE.init(context);
         return INSTANCE;
     }
 
-    /**
-     * Imprecindible para poder actualizar el progreso
-     * @param rootView
-     */
-	public void setView(Context context, View rootView) {
+	public void init(Context context) {
         this.context = context;
 
-        //Guardamos las vistas que vamos a utilizar
-        clockTextView = (TextView) rootView.findViewById(R.id.digitalClock1);
-        circularSeekBar = (CircularSeekBar) rootView.findViewById(R.id.levelProgressBar);
-
-        //Inutilizamos la funcion de click
-        circularSeekBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-
-        //Generamos la notificación para lanzarla más adelante
-        if(mBuilder == null) mBuilder =generateNotification();
-
         //Si el contador no estaba corriendo, asignamos el primer tiempo
-        if (state == State.STOPED)
+        if (state.isStoppedStart())
             clockCalendar.set(Calendar.MINUTE, getBlindsLevel().getMinutes());
 
-        //Metemos en la progressBar y en el tiempo, los datos del clockCalendar
-        updateCounter();
-	}
+        //Metemos en los listeners
+        for (PokerCounterListener listener: listeners) {
+            listener.updateCounter();
+        }
+    }
 
+    /**
+     * @throws InvalidStateError si el sistema ya se ha iniciado,
+     */
 	public void startCounter() {
+        if (state.isRunnig()){
+            throw new InvalidStateError("Counter is alredy started.");
+        }
         //Si segundos restantes ya tiene un valor esto quiere decir que ha sido detenido, y que
         // debemos lanzarlo desde donde nos habíamos quedado.
-		countDownTimer = new MyCountDownTimer(clockCalendar.getTimeInMillis(), 1000).start();
+        addListener(new NotificationListener(context));
+        countDownTimer = (MyCountDownTimer)
+                new MyCountDownTimer(clockCalendar.getTimeInMillis(), 1000).start();
         state = State.RUNNING;
 	}
 
-	/**
-	 * Pausará el contador hasta que se llame a startCounter o a nextLevel
-	 */
+    /**
+     * Pausará el contador hasta que se llame a startCounter o a nextLevel
+     *
+     * @throws InvalidStateError si el sistema ya esta parado o no se ha iniciado
+     */
 	public void pauseCounter() {
+        if(!state.isRunnig()){
+            throw new InvalidStateError("Counter is alredy paused.");
+        }
 		countDownTimer.cancel();
         state = State.PAUSED;
 	}
@@ -126,29 +131,35 @@ public class PokerCounter {
 	public void nextLevel() {
 		blindsLevel++;
 		countDownTimer.cancel();
-        state = State.STOPED;
+        state = State.STOPPED_START;
 
         //Borramos el reloj del anterior nivel, y establecemos el del siguiente
         clockCalendar.setTimeInMillis(0);
         clockCalendar.set(Calendar.MINUTE, getBlindsLevel().getMinutes());
 
-        //TODO Cambiar el boton de continue a paused
+        for (PokerCounterListener listener: listeners) {
+            listener.levelChange();
+        }
 
-        updateCounter();
-	}
+        for (PokerCounterListener listener: listeners) {
+            listener.updateCounter();
+        }
+    }
 
     /**
      * Restaura el nivel de ciegas a su estado inicial
      */
     public void resetBlindsLevel(){
         countDownTimer.cancel();
-        state = State.STOPED;
+        state = State.STOPPED_START;
 
         //Borramos el reloj del anterior nivel, y establecemos el del siguiente
         clockCalendar.setTimeInMillis(0);
         clockCalendar.set(Calendar.MINUTE, getBlindsLevel().getMinutes());
 
-        updateCounter();
+        for (PokerCounterListener listener: listeners) {
+            listener.updateCounter();
+        }
     }
 
 	public BlindsLevel getBlindsLevel() {
@@ -163,51 +174,24 @@ public class PokerCounter {
 		return distribution;
 	}
 
-	/**
-	 * Este método ha de ser redefinir en las subclases para actualizar relojes,
-	 * progressbars ...
-	 */
-	public void updateCounter(){
-        //Calculamos el nivel de progreso en funcion de los segundosRestantes
-        int levelSeconds = (getBlindsLevel().getMinutes() * 60);
-        int segundosRestantes = (int) clockCalendar.getTimeInMillis()/1000;
-        int progress = ((levelSeconds-segundosRestantes)*100)/levelSeconds;
-
-        circularSeekBar.setProgress(progress);
-
-        clockTextView.setText(dataFormat.format(clockCalendar.getTime()));
-    };
-
-    /**
-     * Crea un NotificationCompat.Builder con la notificación de que se ha finalizado el actual
-     * nivel de ciegas
-     * @return
-     */
-    public NotificationCompat.Builder generateNotification(){
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                        .setLargeIcon((((BitmapDrawable) context.getResources()
-                                .getDrawable(R.drawable.ic_launcher)).getBitmap()))
-                        .setContentTitle(context.getString(R.string.level_finished))
-                        .setContentText(context.getString(R.string.level_finished_ext))
-                        .setTicker(context.getString(R.string.level_finished_ext))
-                        .setAutoCancel(true);
-        Intent notIntent =
-                new Intent(context, MainNawDraver.class);
-        notIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        PendingIntent contIntent =
-                PendingIntent.getActivity(
-                        context, 0, notIntent, 0);
-
-        mBuilder.setContentIntent(contIntent);
-
-        return mBuilder;
-    }
-
     public State getState(){
         return state;
+    }
+
+    public Calendar getClockCalendar() {
+        return clockCalendar;
+    }
+
+    public void addListener(PokerCounterListener listener){
+        this.listeners.add(listener);
+    }
+
+    public void removeListener(PokerCounterListener listener){
+        this.listeners.remove(listener);
+    }
+
+    public List<PokerCounterListener> getListeners() {
+        return listeners;
     }
 
     /**
@@ -216,7 +200,6 @@ public class PokerCounter {
      * interfaz.
      */
     private class MyCountDownTimer extends CountDownTimer {
-        private static final int NOTIF_ALERTA_ID = 1;
 
         public MyCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -225,22 +208,31 @@ public class PokerCounter {
         public void onTick(long millisUntilFinished) {
             //Restamos un segundo al reloj
             clockCalendar.add(Calendar.SECOND, -1);
-            updateCounter();
+            for (PokerCounterListener listener: listeners) {
+                listener.updateCounter();
+            }
+
         }
 
         public void onFinish() {
             //Restamos el último segundo al reloj
             clockCalendar.add(Calendar.SECOND, -1);
+            for (PokerCounterListener listener: listeners) {
+                listener.updateCounter();
+            }
+            for (Iterator<PokerCounterListener> iterator = listeners.iterator(); iterator.hasNext();) {
+                PokerCounterListener pcListener = iterator.next();
+                pcListener.levelFinish();
+                if (pcListener instanceof NotificationListener ) {
+                    // Remove the current element from the iterator and the list.
+                    iterator.remove();
+                }
+            }
+            state = State.STOPPED_END;
 
-            updateCounter();
             //TODO lo que podemos hacer es darle al usuario opción de pasar al siguiente nivel (tecla next)
             // O bien comenzar de nuevo el actual (Boton de start, pero con la etiqueta cambiada a
             // reestart y q llama a la funcion de reestart)
-
-            NotificationManager mNotificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
         }
     }
-
 }

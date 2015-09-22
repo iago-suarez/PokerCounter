@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -94,9 +95,16 @@ public class NavigationDrawerFragment extends Fragment {
             mFromSavedInstanceState = true;
         }
 
+        Drawable drawable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable = getResources().getDrawable(android.R.drawable.ic_lock_idle_alarm, getContext().getTheme());
+        } else {
+            drawable = getResources().getDrawable(android.R.drawable.ic_lock_idle_alarm);
+        }
+
+
         drawerItems = new DrawerItem[]{
-                new DrawerItem(getString(R.string.blinds_counter_label), getResources()
-                        .getDrawable(android.R.drawable.ic_lock_idle_alarm),BlindsCounterFrag.class )};
+                new DrawerItem(getString(R.string.blinds_counter_label), drawable,BlindsCounterFrag.class )};
 
         // Si tenemos una clase en mInitialClassItem y un drawerItem que le corresponda, seleccionamos
         // ese DrawerItem para que se el fragment con el que relacionado(mInitialClassItem).

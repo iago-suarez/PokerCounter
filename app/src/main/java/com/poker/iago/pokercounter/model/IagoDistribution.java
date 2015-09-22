@@ -26,7 +26,7 @@ public class IagoDistribution implements BlindsDistribution {
 	private List<BlindsLevel> generateLevels(){
 		List<BlindsLevel> L = new ArrayList<BlindsLevel>();
 		
-		L.add(new BlindsLevel(25, 50, 2));
+		L.add(new BlindsLevel(25, 50, 1));
 		L.add(new BlindsLevel(50, 100, 2));
 		L.add(new BlindsLevel(75, 150, 20));
 		L.add(new BlindsLevel(100, 200, 18));

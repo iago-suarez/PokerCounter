@@ -43,14 +43,16 @@
         android:text="Loading"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="40dp"
+        android:textSize="40dp"/>
+
 
     <Button
         android:id="@+id/startPauseButt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/digitalClock1"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_toLeftOf="@+id/digitalClock1"
         android:text="Button1"
         android:background="@drawable/red_button"
@@ -61,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/digitalClock1"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_toRightOf="@+id/digitalClock1"
         android:text="@string/next_level"
         android:background="@drawable/red_button"
@@ -75,7 +77,8 @@
             android:layout_marginTop="30dp"
             android:stretchColumns="3"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:background="#FFFFFF">
 
             <TableRow
                 android:id="@+id/tableRow1"
