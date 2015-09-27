@@ -22,5 +22,13 @@
     <string name="blinds_counter_label">Blinds Counter</string>
     <string name="big_blind_lbl">BB:</string>
     <string name="small_blind_lbl">SB:</string>
+    <string name="no_more_levels_msg">There are no more levels</string>
+    <string name="add_level">Add new level</string>
+    <string name="return_lbl">Return</string>
+    <string name="oops_lbl">Oops! :(</string>
+    <string name="finish_lbl">Finish</string>
+    <string name="cancel_lbl">cancel</string>
+    <string name="input_empty">This field is required</string>
+    <string name="minutes_lbl">Minutes:</string>
 
 </resources>

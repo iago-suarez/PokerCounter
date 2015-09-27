@@ -10,20 +10,21 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.devadvance.circularseekbar.CircularSeekBar;
 import com.poker.iago.pokercounter.R;
+import com.poker.iago.pokercounter.model.BlindsDistributionListener;
 import com.poker.iago.pokercounter.model.BlindsLevel;
+import com.poker.iago.pokercounter.model.NoMoreLevelsException;
 import com.poker.iago.pokercounter.model.PokerCounter;
 import com.poker.iago.pokercounter.model.PokerCounterListener;
 
 import java.text.SimpleDateFormat;
 
 
-public class BlindsCounterFrag extends Fragment implements PokerCounterListener {
+public class BlindsCounterFrag extends Fragment implements PokerCounterListener, BlindsDistributionListener {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -65,6 +66,7 @@ public class BlindsCounterFrag extends Fragment implements PokerCounterListener 
 
         if(savedInstanceState == null){
             pokerCounter.addListener(this);
+            pokerCounter.getDistribution().addBlindsDistributionListener(this);
         }
 
         //En caso de que la vista del fragment haya sido recargado reponemos los onjetos que hemos
@@ -75,7 +77,7 @@ public class BlindsCounterFrag extends Fragment implements PokerCounterListener 
 
         blindsTable = (TableLayout) rootView.findViewById(R.id.blinds_table);
 
-        generateTableRow(inflater);
+        generateTableRow();
 
         startPauseButt = (Button) rootView.findViewById(R.id.startPauseButt);
         startPauseButt.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +108,11 @@ public class BlindsCounterFrag extends Fragment implements PokerCounterListener 
         nextLevelButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pokerCounter.nextLevel();
+                try {
+                    pokerCounter.nextLevel();
+                } catch (NoMoreLevelsException e) {
+                    new NoMoreLevelsDialog().show(getFragmentManager(), "NoMoreLevels");
+                }
             }
         });
 
@@ -133,6 +139,7 @@ public class BlindsCounterFrag extends Fragment implements PokerCounterListener 
     public void onPause() {
         super.onPause();
         pokerCounter.removeListener(this);
+        pokerCounter.getDistribution().removeBlindsDistributionListener(this);
         System.out.println("*************** Nuevo Fragment Pausado ************+");
 
     }
@@ -189,6 +196,46 @@ public class BlindsCounterFrag extends Fragment implements PokerCounterListener 
     public void levelChange() {
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        ((MainNawDraver) context).updateTitle(
+                getArguments().getInt(ARG_SECTION_NUMBER));
+        System.out.println("*************** Nuevo Fragment Attacheado ************+");
+
+    }
+
+    /**
+     * Save the actual center point of the map to be restored when the Activity be restored.
+     *
+     * @param outState
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //TODO Guardar el estado de los objetos importantes
+    }
+
+    /**
+     * Borramos todas las filas y volvemos a crearlas
+     */
+    @Override
+    public void updateBlindsLevels() {
+        blindsTable.removeAllViews();
+        generateTableRow();
+    }
+
+    /**
+     * Recorremos los nieveles de ciegas añadiendo la TableRow correspondiente a cada uno
+     */
+    private void generateTableRow() {
+        boolean isDarkRow = false;
+        for (BlindsLevel bl : pokerCounter.getDistribution()
+                .getBlindsLevels()) {
+            addTableRow(bl, blindsTable,  getLayoutInflater(new Bundle()), isDarkRow);
+            isDarkRow = !isDarkRow;
+        }
+    }
+
     /**
      * Dado un nivel de ciegas, se añade a la tabla parent la vista
      * correspondiente al nivel de ciegas bl que obtenemos de blinds_table_item
@@ -198,7 +245,7 @@ public class BlindsCounterFrag extends Fragment implements PokerCounterListener 
      * @param inflater
      */
     private void addTableRow(BlindsLevel bl, TableLayout parent,
-                                    LayoutInflater inflater, Boolean greyStyle) {
+                             LayoutInflater inflater, Boolean greyStyle) {
 
         View row = inflater.inflate(R.layout.blinds_table_item, parent, false);
         row.setOnClickListener(new View.OnClickListener() {
@@ -223,36 +270,5 @@ public class BlindsCounterFrag extends Fragment implements PokerCounterListener 
             row.setBackgroundColor(getResources().getColor(R.color.superdarkgreen));
         }
         parent.addView(row);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        ((MainNawDraver) context).updateTitle(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-        System.out.println("*************** Nuevo Fragment Attacheado ************+");
-
-    }
-
-    /**
-     * Save the actual center point of the map to be restored when the Activity be restored.
-     *
-     * @param outState
-     */
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //TODO Guardar el estado de los objetos importantes
-    }
-
-    /**
-     * Recorremos los nieveles de ciegas añadiendo la TableRow correspondiente a cada uno
-     */
-    private void generateTableRow(LayoutInflater inflater) {
-        boolean isDarkRow = false;
-        for (BlindsLevel bl : pokerCounter.getDistribution()
-                .getBlindsLevels()) {
-            addTableRow(bl, blindsTable, inflater, isDarkRow);
-            isDarkRow = !isDarkRow;
-        }
     }
 }

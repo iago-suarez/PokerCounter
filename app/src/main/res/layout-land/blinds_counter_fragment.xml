@@ -39,7 +39,7 @@
         android:text="Loading"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:textSize="40dp"/>
+        android:textSize="40sp"/>
 
     <Button
         android:id="@+id/startPauseButt"
@@ -75,7 +75,7 @@
         <TableLayout
             android:id="@+id/blinds_table"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="wrap_content" >
 
             <TableRow
                 android:id="@+id/tableRow1"

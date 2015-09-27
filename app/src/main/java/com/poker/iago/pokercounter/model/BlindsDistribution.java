@@ -13,8 +13,14 @@ public interface BlindsDistribution {
 	 * 
 	 * @return the name of the distribution, for example doubleDistribution
 	 */
-	public String getName();
+	String getName();
 
-	public List<BlindsLevel> getBlindsLevels();
+	List<BlindsLevel> getBlindsLevels();
+
+	void addLevel(BlindsLevel blindsLevel);
+
+    void addBlindsDistributionListener(BlindsDistributionListener listener);
+
+    void removeBlindsDistributionListener(BlindsDistributionListener listener);
 
 }

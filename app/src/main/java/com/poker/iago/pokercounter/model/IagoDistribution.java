@@ -6,6 +6,7 @@ import java.util.List;
 public class IagoDistribution implements BlindsDistribution {
 
 	private List<BlindsLevel> levels;
+	private List<BlindsDistributionListener> listeners = new ArrayList<>();
 	private String name = "IagoDistribution";
 	
 	public IagoDistribution(){
@@ -21,6 +22,24 @@ public class IagoDistribution implements BlindsDistribution {
 	@Override
 	public List<BlindsLevel> getBlindsLevels() {
 		return levels;
+	}
+
+	@Override
+	public void addLevel(BlindsLevel blindsLevel) {
+		levels.add(blindsLevel);
+        for(BlindsDistributionListener listener : listeners){
+            listener.updateBlindsLevels();
+        }
+	}
+
+	@Override
+	public void addBlindsDistributionListener(BlindsDistributionListener listener) {
+        listeners.add(listener);
+	}
+
+	@Override
+	public void removeBlindsDistributionListener(BlindsDistributionListener listener) {
+        listeners.remove(listener);
 	}
 
 	private List<BlindsLevel> generateLevels(){

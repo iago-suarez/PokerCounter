@@ -128,9 +128,16 @@ public class PokerCounter {
 	 * Avanza un nivel de ciegas Pararemos el contador para esto, de forma que
 	 * para que vuelva a correr es necesaria una llamada a startCounter
 	 */
-	public void nextLevel() {
-		blindsLevel++;
-		countDownTimer.cancel();
+	public void nextLevel() throws NoMoreLevelsException {
+
+        if (blindsLevel+1 >= distribution.getBlindsLevels().size()){
+            throw new NoMoreLevelsException();
+        }
+
+        blindsLevel++;
+		if(countDownTimer != null){
+            countDownTimer.cancel();
+        }
         state = State.STOPPED_START;
 
         //Borramos el reloj del anterior nivel, y establecemos el del siguiente
@@ -162,9 +169,9 @@ public class PokerCounter {
         }
     }
 
-	public BlindsLevel getBlindsLevel() {
-		return distribution.getBlindsLevels().get(blindsLevel);
-	}
+	public BlindsLevel getBlindsLevel(){
+        return distribution.getBlindsLevels().get(blindsLevel);
+    }
 
     public void setDistribution(BlindsDistribution distribution) {
         this.distribution = distribution;
